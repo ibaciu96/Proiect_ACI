@@ -43,10 +43,10 @@ class MethodA(Method):
         image2 = shape_image.crop(bounding_box)
         # image1.alpha_composite(image2)
 
-        diff_image = ImageChops.difference(image1, image2).convert('RGBA')
+        diff_image = ImageChops.difference(image1, image2).convert('RGB')
 
         try:
-            return np.square(np.array(diff_image)).sum() * (1 - individual.z_index)
+            return np.sqrt(np.array(diff_image).sum(axis=0)).sum()
         except ArithmeticError:
             return .0
 
@@ -67,34 +67,34 @@ class MethodA(Method):
         :param no_attributes_to_change: number of attributes to change between values
         :return: new offsprings
         """
-        attributes = [random.randint(0, 2), random.randint(0, 2), random.randint(0, 2), random.randint(0, 2)]
-
-        for idx in range(len(attributes)):
-            if idx == 0 and attributes[idx] == 1:
-                if individual1.name == POLYGON:
-                    max_vertices = random.randint(0, individual1.vertices_no + 1)
-                    fst1 = individual1.vertices[:max_vertices]
-                    snd1 = individual1.vertices[max_vertices:]
-                    fst2 = individual2.vertices[:max_vertices]
-                    snd2 = individual2.vertices[max_vertices:]
-                    individual1.vertices = fst1 + snd2
-                    individual2.vertices = fst2 + snd1
-                else:
-                    aux = individual1.center
-                    individual1.center = individual2.center
-                    individual2.center = aux
-            if idx == 1 and attributes[idx] == 1:
-                aux = individual1.color
-                individual1.color = individual2.color
-                individual2.color = aux
-            if idx == 2 and attributes[idx] == 1:
-                aux = individual1.size
-                individual1.size = individual2.size
-                individual2.size = aux
-            if idx == 3 and attributes[idx] == 1:
-                aux = individual1.z_index
-                individual1.z_index = individual2.z_index
-                individual2.z_index = aux
+        value = random.random()
+        if value < 0.5:
+            aux = individual1.color
+            individual1.color = individual2.color
+            individual2.color = aux
+        if value >= 0.5 and value < 0.75:
+            aux = individual1.size
+            individual1.size = individual2.size
+            individual2.size = aux
+        if value > 0.75 and value < 1:
+            if individual1.name == POLYGON:
+                max_vertices = random.randint(0, individual1.vertices_no + 1)
+                fst1 = individual1.vertices[:max_vertices]
+                snd1 = individual1.vertices[max_vertices:]
+                fst2 = individual2.vertices[:max_vertices]
+                snd2 = individual2.vertices[max_vertices:]
+                individual1.vertices = fst1 + snd2
+                individual2.vertices = fst2 + snd1
+                aux = individual1.center
+                individual1.center = individual2.center
+                individual2.center = aux
+            else:
+                aux = individual1.center
+                individual1.center = individual2.center
+                individual2.center = aux
+        """aux = individual1.z_index
+        individual1.z_index = individual2.z_index
+        individual2.z_index = aux"""
 
         return individual1, individual2
 

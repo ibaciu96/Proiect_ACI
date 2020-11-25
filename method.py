@@ -25,7 +25,7 @@ def do_show_image(g: int) -> bool:
     :param g: generation number
     :return: boolean value
     """
-    if g in [100, 1_000, 2_500, 5_000, 10_000, 15_000, 50_000, 100_000, 150_000, 200_000, 300_000, 500_000, 1_000_000]:
+    if g in [10, 25, 50, 75, 100, 150, 250, 500, 1_000, 2_500, 5_000, 10_000, 15_000, 50_000]:
         return True
     return False
 
@@ -93,6 +93,7 @@ class Method:
         draw_image = ImageDraw.Draw(im=image, mode=MODE)
         shapes = deepcopy(self.candidate) if candidates == None else deepcopy(candidates)
 
+        # shapes.sort(key=lambda x: x.z_index)
         for shape in shapes:
             (r, g, b, a) = shape.color.rgba
             if shape.name == ELLIPSE:
@@ -142,22 +143,26 @@ class Method:
         """
         assert not(changes_no < 0 or changes_no > 3), 'Number of changes must be in [0, 3]!'
 
-        # Get best population
+        # Get best population best_no %
         initial_size = len(self.population)
-        new_population = deepcopy(self.population[:int(len(self.population) * best_no)])
-        # Keep halve of the population for next generation
-        first_population = self.population[:int(len(self.population)/2)]
-        last_population = self.population[int(len(self.population) /2):]
-        self.population = deepcopy(first_population)
+        new_population = deepcopy(self.population[:int(len(self.population) * 0.1)])
 
-        # Crossover and mutation
-        if len(self.population) % 2 == 1:
-            last = deepcopy(self.population[-1])
-            self.population.append(last)
+        # Pool for offsprings
+        crossover_population = self.population[:int(len(self.population)/2)]
+        copy_crossover_population = deepcopy(crossover_population)
+        copy = deepcopy(self.population)
+        copy.reverse()
 
-        while len(self.population) > 0:
-            parent1 = deepcopy(self.population.pop(0))
-            parent2 = deepcopy(self.population.pop(0))
+        # Add one more individual for odd number
+        if len(crossover_population) % 2 == 1:
+            last = deepcopy(crossover_population[-1])
+            crossover_population.append(last)
+
+        while len(new_population) < initial_size:
+            index1 = randint(0, len(crossover_population) - 1)
+            parent1 = deepcopy(crossover_population[index1])
+            index2 = randint(0, len(crossover_population) - 1)
+            parent2 = deepcopy(crossover_population[index2])
 
             # Crossover
             child1, child2 = self.__crossover__(individual1=parent1, individual2=parent2, no_attributes_to_change=changes_no)
@@ -174,9 +179,7 @@ class Method:
             new_population.append(child2)
 
         # Population update
-        new_population = new_population + last_population
-        self.population = deepcopy(new_population[:initial_size])
-        # print(len(self.population))
+        self.population = deepcopy(new_population)
 
     def __fitness__(self, individual: Individual) -> float:
         """

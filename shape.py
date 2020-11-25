@@ -6,8 +6,8 @@ import math
 
 BB = [int, int, int, int]
 Pixel = (int, int, int, int)
-MAX_WH = 70
-MIN_WH = 30
+MAX_WH = 80
+MIN_WH = 50
 COLOR_MIN_ALPHA = 30
 COLOR_MAX_ALPHA = 60
 
@@ -139,7 +139,7 @@ class Shape(Individual):
         :param max_height: shape height or major radius
         :param no_attributes_to_change: number of attributes to mutate
         """
-        attributes = [randint(0, 2), randint(0, 2), randint(0, 2), randint(0, 2), randint(0, 2)]
+        attributes = [randint(0, 1), randint(0, 1), randint(0, 1), randint(0, 1), randint(0, 1)]
 
         for idx in range(len(attributes)):
             if idx == 0 and attributes[idx] == 1:
