@@ -46,7 +46,9 @@ class MethodA(Method):
         diff_image = ImageChops.difference(image1, image2).convert('RGB')
 
         try:
-            return np.sqrt(np.array(diff_image).sum(axis=0)).sum()
+            fitness = np.sqrt(np.array(diff_image).sum(axis=0)).sum()
+            individual.fitness = fitness
+            return fitness
         except ArithmeticError:
             return .0
 
@@ -67,7 +69,50 @@ class MethodA(Method):
         :param no_attributes_to_change: number of attributes to change between values
         :return: new offsprings
         """
-        value = random.random()
+        value1 = random.randint(0, 8)
+        value2 = random.randint(0, 8)
+        arr = []
+        if value1 >= value2:
+            point1 = value2
+            point2 = value1
+        else:
+            point1 = value1
+            point2 = value2
+        for i in range(0, point1):
+            arr.append(0)
+        for i in range(point1, point2):
+            arr.append(1)
+        for i in range(point2, 8):
+            arr.append(0)
+
+        if arr[1] == 1:
+            aux = individual1.center
+            individual1.center = individual2.center
+            individual2.center = aux
+        if arr[2] == 1:
+            aux = individual1.color
+            individual1.color = individual2.color
+            individual2.color = aux
+        if arr[3] == 1:
+            aux = individual1.size
+            individual1.size = individual2.size
+            individual2.size = aux
+        if arr[4] == 1:
+            aux = individual1.z_index
+            individual1.z_index = individual2.z_index
+            individual2.z_index = aux
+        if arr[5] == 1:
+            aux = individual1.vertices_no
+            individual1.vertices_no = individual2.vertices_no
+            individual2.vertices_no = aux
+        if arr[6] == 1:
+            aux = individual1.vertices
+            individual1.vertices = individual2.vertices
+            individual2.vertices = aux
+        individual1.fitness = 999999999
+        individual2.fitness = 999999999
+
+        """
         if value < 0.5:
             aux = individual1.color
             individual1.color = individual2.color
@@ -91,7 +136,7 @@ class MethodA(Method):
             else:
                 aux = individual1.center
                 individual1.center = individual2.center
-                individual2.center = aux
+                individual2.center = aux"""
         """aux = individual1.z_index
         individual1.z_index = individual2.z_index
         individual2.z_index = aux"""

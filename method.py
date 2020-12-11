@@ -7,7 +7,8 @@ from time import time
 from termcolor import colored
 from shape import Color, Point2D
 from copy import deepcopy
-from random import randint
+from random import randint, uniform
+import bisect
 
 WHITE = Color(red=255, green=255, blue=255, alpha=255)
 BLACK = Color(red=0, green=0, blue=0, alpha=255)
@@ -25,7 +26,7 @@ def do_show_image(g: int) -> bool:
     :param g: generation number
     :return: boolean value
     """
-    if g in [10, 25, 50, 75, 100, 150, 250, 500, 1_000, 2_500, 5_000, 10_000, 15_000, 50_000]:
+    if g in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 250, 500, 1_000, 2_500, 5_000, 10_000, 15_000, 50_000]:
         return True
     return False
 
@@ -145,11 +146,46 @@ class Method:
 
         # Get best population best_no %
         initial_size = len(self.population)
-        new_population = deepcopy(self.population[:int(len(self.population) * 0.1)])
+        new_population = deepcopy(self.population[:int(len(self.population) * 0.3)])
+        """fitnesses = [x.fitness for x in self.population]
+        max_fitness = sum(fitnesses)
+
+        while len(new_population) < initial_size:
+            point1 = uniform(0, max_fitness)
+            point2 = uniform(0, max_fitness)
+            index1 = 0
+            index2 = 0
+            some_sum = 0
+            gotIndex1 = False
+            gotIndex2 = False
+            for index in range(0, len(fitnesses)):
+                some_sum += fitnesses[index]
+                if some_sum >= point1 and not gotIndex1:
+                    index1 = index
+                    gotIndex1 = True
+                if some_sum >= point2 and not gotIndex2:
+                    index2 = index
+                    gotIndex2 = True
+                if gotIndex1 and gotIndex2: break
+
+            parent1 = deepcopy(self.population[index1])
+            parent2 = deepcopy(self.population[index2])
+
+            child1, child2 = self.__crossover__(individual1=parent1, individual2=parent2, no_attributes_to_change=changes_no)
+            # Mutation
+            if mutation_probability > random():
+                child1 = self.__mutate__(individual=child1, no_attributes_to_change=changes_no)
+            if mutation_probability > random():
+                child2 = self.__mutate__(individual=child2, no_attributes_to_change=changes_no)
+
+            new_population.append(child1)
+            new_population.append(child2)
+
+        # Population update
+        self.population = deepcopy(new_population)"""
 
         # Pool for offsprings
-        crossover_population = self.population[:int(len(self.population)/2)]
-        copy_crossover_population = deepcopy(crossover_population)
+        crossover_population = deepcopy(self.population[:int(len(self.population)/2)])
         copy = deepcopy(self.population)
         copy.reverse()
 
@@ -180,6 +216,7 @@ class Method:
 
         # Population update
         self.population = deepcopy(new_population)
+
 
     def __fitness__(self, individual: Individual) -> float:
         """

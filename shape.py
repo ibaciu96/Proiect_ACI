@@ -6,8 +6,8 @@ import math
 
 BB = [int, int, int, int]
 Pixel = (int, int, int, int)
-MAX_WH = 80
-MIN_WH = 50
+MAX_WH = 50
+MIN_WH = 30
 COLOR_MIN_ALPHA = 30
 COLOR_MAX_ALPHA = 60
 
@@ -106,6 +106,7 @@ class Shape(Individual):
         self.z_index = z_index
         self.vertices_no = 0
         self.vertices = []
+        self.fitness = 0
 
     def __str__(self) -> str:
         """

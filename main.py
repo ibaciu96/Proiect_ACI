@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 from methodA import MethodA
 from methodB import MethodB
-from methodC import MethodC
 from method import Method
 from termcolor import colored
 import numpy as np
